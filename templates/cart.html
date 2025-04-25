@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="my-3">Your Cart</h2>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in products %}
+      <tr>
+        <td>{{ product.name }}</td>
+        <td>₹{{ product.price }}</td>
+        <td><form method="post" action="{% url 'cart' %}">
+            {% csrf_token %}
+            <input type="hidden" name="product" value="{{ product.id }}">
+            
+            <button name="action" value="remove" class="btn btn-danger btn-sm">-</button>
+            <span class="mx-2">{{ product.quantity }}</span>
+            <button name="action" value="add" class="btn btn-success btn-sm">+</button></td>
+        <td>₹{{ product.total }}</td>
+        
+        </form>
+      </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="3"><strong>Grand Total:</strong></td>
+      <td><strong>₹{{ cart_total }}</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<a href="{% url 'checkout' %}" class="btn btn-success">Proceed to Checkout</a>
+{% endblock %}

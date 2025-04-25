@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Your Orders</h2>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Address</th>
+      <th>Phone</th>
+      <th>Date</th>
+      <th>Status</th> 
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td>{{ order.product.name }}</td>
+      <td>₹{{ order.price }}</td>
+      <td>{{ order.quantity }}</td>
+      <td>{{ order.address }}</td>
+      <td>{{ order.phone }}</td>
+      <td>{{ order.date }}</td>
+      <td>{{ order.status }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

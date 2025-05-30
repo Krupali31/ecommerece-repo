@@ -1,0 +1,7 @@
+myenv/
+projet/myenv/Lib
+projectmyenv/Scripts
+user/_pycache_
+project/user/migrations
+    
+project/myenv

@@ -1,19 +1,30 @@
 {% extends 'base.html' %}
+{%load static%}
 {% block content %}
 <h2>Checkout</h2>
 
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="first_name" placeholder="First Name" required><br>
-    <input type="text" name="last_name" placeholder="Last Name" required><br>
-    <input type="text" name="address1" placeholder="Address" required><br>
-    <input type="text" name="city" placeholder="City" required><br>
-    <input type="text" name="province" placeholder="Province" required><br>
-    <input type="text" name="country" placeholder="Country" required><br>
-    <input type="text" name="zip" placeholder="Zip Code" required><br>
-    <br>
-    <button type="submit">Continue to Payment</button>
-  </form>
-  
+<form method="post" action="{% if product %}/buy_now/{{ product.id }}/{% else %}/checkout/{% endif %}">
+  {% csrf_token %}
+  <input type="text" name="first_name" placeholder="First Name" required><br>
+  <input type="text" name="last_name" placeholder="Last Name" required><br>
+  <input type="text" name="address1" placeholder="Address" required><br>
+  <input type="text" name="city" placeholder="City" required><br>
+  <input type="text" name="state" placeholder="state" required><br>
+  <input type="text" name="country" placeholder="Country" required><br>
+  <input type="text" name="zip" placeholder="Zip Code" required><br>
+  <input type="text" name="phone" placeholder="Phone Number" required><br>
+
+  <label>
+    <input type="radio" name="payment_method" value="COD" checked > 
+    Cash on Delivery (COD)
+  </label><br>
+  <label>
+    <input type="radio" name="payment_method" value="Online" > 
+    Pay Online
+  </label><br>
+
+  <button id="submit-btn" type="submit">Place Order</button>
+</form>
 
 {% endblock %}
+

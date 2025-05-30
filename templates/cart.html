@@ -1,39 +1,64 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<h2 class="my-3">Your Cart</h2>
+<h2 class="my-4">🛒 Your Cart</h2>
 
-<table class="table table-bordered">
-  <thead>
+{% if products %}
+<table class="table table-bordered align-middle">
+  <thead class="table-light">
     <tr>
       <th>Product</th>
+      <th>Name</th>
       <th>Price</th>
       <th>Quantity</th>
       <th>Total</th>
+      <th>Remove</th>
     </tr>
   </thead>
   <tbody>
     {% for product in products %}
       <tr>
+        <td style="width: 120px;">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+          {% else %}
+            <img src="{% static 'default-product-image.png' %}" class="img-fluid rounded" alt="No Image">
+          {% endif %}
+        </td>
         <td>{{ product.name }}</td>
         <td>₹{{ product.price }}</td>
-        <td><form method="post" action="{% url 'cart' %}">
+        <td>
+          <form method="post" action="{% url 'cart' %}" class="d-flex align-items-center">
             {% csrf_token %}
             <input type="hidden" name="product" value="{{ product.id }}">
-            
-            <button name="action" value="remove" class="btn btn-danger btn-sm">-</button>
+            <button name="action" value="remove" class="btn btn-outline-danger btn-sm">-</button>
             <span class="mx-2">{{ product.quantity }}</span>
-            <button name="action" value="add" class="btn btn-success btn-sm">+</button></td>
+            <button name="action" value="add" class="btn btn-outline-success btn-sm">+</button>
+          </form>
+        </td>
         <td>₹{{ product.total }}</td>
-        
-        </form>
+        <td>
+          <form method="post" action="{% url 'cart' %}">
+            {% csrf_token %}
+            <input type="hidden" name="product" value="{{ product.id }}">
+            <button name="action" value="clear" class="btn btn-danger btn-sm">×</button>
+          </form>
+        </td>
       </tr>
     {% endfor %}
     <tr>
-      <td colspan="3"><strong>Grand Total:</strong></td>
-      <td><strong>₹{{ cart_total }}</strong></td>
+      <td colspan="4" class="text-end"><strong>Grand Total:</strong></td>
+      <td colspan="2"><strong>₹{{ cart_total }}</strong></td>
     </tr>
   </tbody>
 </table>
 
-<a href="{% url 'checkout' %}" class="btn btn-success">Proceed to Checkout</a>
+<div class="text-end">
+  <a href="{% url 'checkout' %}" class="btn btn-success">Proceed to Checkout</a>
+</div>
+
+{% else %}
+  <div class="alert alert-info">Your cart is empty.</div>
+{% endif %}
+
 {% endblock %}

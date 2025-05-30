@@ -53,14 +53,6 @@
           <button class="btn btn-outline-secondary btn-sm" type="submit">🔍</button>
         </form>
 
-        {% if request.session.customer %}
-          <a class="btn btn-outline-secondary btn-sm me-2" href="/orders/">📦 Orders</a>
-          <a class="btn btn-outline-dark btn-sm me-2" href="/logout/">Logout</a>
-        {% else %}
-          <a class="btn btn-outline-primary btn-sm me-2" href="/login/">Login</a>
-          <a class="btn btn-outline-success btn-sm me-3" href="/signup/">Signup</a>
-        {% endif %}
-
         <a class="btn btn-outline-danger btn-sm position-relative" href="/cart/">
           🛒 Cart
           {% if cart_total_items > 0 %}
@@ -69,6 +61,15 @@
           </span>
           {% endif %}
         </a>
+        
+        {% if request.session.customer %}
+          <a class="btn btn-outline-secondary btn-sm me-2" href="/orders/">📦 Orders</a>
+          <a class="btn btn-outline-dark btn-sm me-2" href="/logout/">Logout</a>
+        {% else %}
+          <a class="btn btn-outline-primary btn-sm me-2" href="/login/">Login</a>
+          <a class="btn btn-outline-success btn-sm me-3" href="/signup/">Signup</a>
+        {% endif %}
+
       </div>
     </div>
   </div>
@@ -81,7 +82,7 @@
     <div class="container d-flex justify-content-between">
       <div>
         <h5>MyShop</h5>
-        <p>&copy; 2025 All rights reserved</p>
+        
       </div>
       <div>
         <h6>Quick Links</h6>
@@ -93,7 +94,7 @@
       </div>
       <div>
         <h6>Follow Us</h6>
-        <a href="#" class="text-light me-2">Instagram</a>
+        <a href="https://www.instagram.com/" class="text-light me-2">Instagram</a>
         <a href="#" class="text-light">Facebook</a>
       </div>
     </div>
@@ -103,6 +104,6 @@
 
 <!-- Custom JS -->
 <script src="{% static 'project/js/script.js' %}"></script>
-
+<script src="{% static 'project/js/checkout.js' %}"></script>
 </body>
 </html>

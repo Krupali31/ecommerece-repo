@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - MyShop{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4">Contact Us</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  {% if errors %}
+    <div class="alert alert-danger">
+      <ul class="mb-0">
+        {% for field, error_list in errors.items %}
+          <li><strong>{{ field }}</strong>: {{ error_list.0 }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="id_name" class="form-label">Name</label>
+      <input type="text" name="name" id="id_name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="id_email" class="form-label">Email</label>
+      <input type="email" name="email" id="id_email" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="id_message" class="form-label">Message</label>
+      <textarea name="message" id="id_message" class="form-control" rows="5" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Send Message</button>
+  </form>
+</div>
+{% endblock %}

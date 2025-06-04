@@ -11,7 +11,7 @@ user/migrations/
 
 *.pyc
 __pycache__/
-
+project/__pycache__
 
 .env
 .ruff_cache/

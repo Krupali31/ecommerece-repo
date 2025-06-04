@@ -23,6 +23,8 @@
       <td>{{ order.data.phone }}</td>
       <td>{{ order.data.date }}</td>
       <td>{{ order.data.status }}</td>
+      <td>Payment Method: {{ order.data.payment_method }}</td>
+      <td>Payment Status: {{ order.data.payment_status }}</td>
     </tr>
     {% endfor %}
   </tbody>

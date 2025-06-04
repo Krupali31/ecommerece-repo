@@ -4,12 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
-django-environ = "*"
-djangorestframework = "*"
-psycopg2-binary = "*"
-requests = "*"
-pillow = "*"
+gunicorn = "*"
+waitress = "*"
 
 [dev-packages]
 

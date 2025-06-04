@@ -1,6 +1,6 @@
 import requests
 import json
-
+import stripe
 from django.contrib import messages
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
@@ -14,6 +14,8 @@ from .models import Category, Customer, Order, Products,  AboutUs
 from .serializers import OrderSerializer, ContactMessageSerializer
 from .logger import UserLogger as Logger
 from django.utils import timezone
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class CartViewSet(ViewSet):
     permission_classes = [AllowAny]
@@ -256,7 +258,9 @@ class CheckOutViewSet(ViewSet):
                 "address": f"{address}, {city}, {country} - {zip_code}",
                 "phone": phone,
                 "cart": cart,
-                "total_amount": total_amount
+                "total_amount": total_amount,
+                "payment_method": "online",
+                "payment_status": "pending",
             }
             request.session.save()
             return redirect('stripe_payment')
@@ -420,6 +424,15 @@ def stripe_webhook(request):
         return HttpResponse(status=400)
 
     if event['type'] == 'checkout.session.completed':
+        Order.objects.create(
+        
+        data={
+            
+            "payment_method": "Online",
+            "payment_status": "Paid",
+            
+        }
+    )
         session = event['data']['object']
 
         customer_id = session.get('client_reference_id')
@@ -429,7 +442,6 @@ def stripe_webhook(request):
 
         customer = Customer.objects.filter(id=customer_id).first()
 
-        # Retrieve line items from Stripe API
         line_items = stripe.checkout.Session.list_line_items(session['id'])
 
         for item in line_items:
@@ -460,7 +472,7 @@ def stripe_webhook(request):
 def payment_success(request):
     request.session['cart'] = {}
     request.session['checkout'] = {}
-    return render(request, 'payment_success.html')
+    return redirect('orders')
 
 def payment_cancel(request):
     return render(request, 'payment_cancel.html')

@@ -1,15 +1,38 @@
 {% extends 'base.html' %}
 {% block title %}Signup{% endblock %}
 {% block content %}
-<h2>Signup</h2>
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username" required><br>
-    <input type="text" name="phone" placeholder="Phone" required><br>
-    <input type="email" name="email" placeholder="Email" required><br>
-    <input type="password" name="password" placeholder="Password" required><br>
-    <button type="submit">Register</button>
-    <p class="text-danger">{{ error }}</p>
-    <p>Already have an account ?<a href="/login"> <br> Login</a> here</p>
-</form>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Create an Account</h2>
+    <form method="post" class="w-50">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <input type="text" name="username" class="form-control" placeholder="Username" required value="{{ values.username|default:'' }}">
+        </div>
+        
+        <div class="mb-3">
+            <input type="text" name="phone" class="form-control" placeholder="Phone Number" required value="{{ values.phone|default:'' }}">
+        </div>
+
+        <div class="mb-3">
+            <input type="email" name="email" class="form-control" placeholder="Email Address" required value="{{ values.email|default:'' }}">
+        </div>
+
+        <div class="mb-3">
+            <input type="password" name="password" class="form-control" placeholder="Password" required>
+        </div>
+
+        {% if error %}
+        <p class="text-danger">{{ error }}</p>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">Register</button>
+
+        <p class="mt-3">Already have an account?
+            <a href="/login">Login here</a>
+        </p>
+    </form>
+</div>
+
 {% endblock %}

@@ -17,14 +17,12 @@
     {% for order in orders %}
     <tr>
       <td>{{ order.product.name }}</td>
-      <td>₹{{ order.data.price }}</td>
-      <td>{{ order.data.quantity }}</td>
-      <td>{{ order.data.address }}</td>
-      <td>{{ order.data.phone }}</td>
-      <td>{{ order.data.date }}</td>
-      <td>{{ order.data.status }}</td>
-      <td>Payment Method: {{ order.data.payment_method }}</td>
-      <td>Payment Status: {{ order.data.payment_status }}</td>
+      <td>₹{{ order.price }}</td>
+      <td>{{ order.quantity }}</td>
+      <td>{{ order.address }}</td>
+      <td>{{ order.phone }}</td>
+      <td>{{ order.date }}</td>
+      <td>{{ order.status }}</td>
     </tr>
     {% endfor %}
   </tbody>

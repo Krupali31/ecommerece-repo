@@ -19,3 +19,25 @@ project/__pycache__
 
 
 myenv/
+
+myenv/
+
+
+__pycache__/
+*.py[cod]
+
+
+user/migrations/
+
+.env/
+
+*.pyc
+__pycache__/
+
+
+.env
+.ruff_cache/
+
+
+
+myenv/

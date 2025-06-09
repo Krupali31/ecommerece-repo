@@ -138,5 +138,56 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATICFILES_DIRS = [BASE_DIR / "static",]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-SHOPIFY_STORE_NAME = "" 
-SHOPIFY_ACCESS_TOKEN = ""
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+        "skip_static_files": {
+            "()": SkipStaticFilter,
+        },
+        "only_static_files": {
+            "()": StaticFilter,
+        },
+    },
+    "formatters": {
+        "simple": {
+            "format": """{"created_at": "%(asctime)s", "level": %(levelname)s, "message": %(message)s }""",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+        "verbose": {
+            "format": """{ "created_at": %(asctime)s, "level": %(levelname)s, "function": %(name)s.%(funcName)s:%(lineno)d, "app": %(name)s, "detail": %(message)s }""",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "filters": ["skip_static_files"],
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "root": {
+        "level": "INFO",
+        "handlers": ["console"],
+    },
+    "loggers": {
+        "django": {
+            "handlers": [],
+        },
+        "django.db": {
+            "handlers": [],
+        },
+        "numexpr": {"handlers": ["console"], "level": "WARNING"},
+        "sentence_transformers": {"handlers": ["console"], "level": "WARNING"},
+    },
+}
+
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
+STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY", "") 

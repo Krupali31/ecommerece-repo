@@ -1,3 +1,6 @@
+import json
+import stripe
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.hashers import check_password, make_password
 
@@ -7,6 +10,11 @@ from rest_framework.permissions import AllowAny
 from .models import Category, Customer, Order, Products,  AboutUs
 import requests
 from django.conf import settings
+from .serializers import OrderSerializer, ContactMessageSerializer
+from .logger import UserLogger as Logger
+from django.utils import timezone
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class CartViewSet(ViewSet):
     permission_classes = [AllowAny]
@@ -242,8 +250,27 @@ class CheckOutViewSet(ViewSet):
                 )
             request.session['cart'] = {}
             return render(request, 'orders.html', {'message': 'Order placed successfully (Cash on Delivery)'})
+        
+        elif payment_method == "Online":
+            request.session['checkout'] = {
+                "customer_id": customer.id,
+                "address": f"{address}, {city}, {country} - {zip_code}",
+                "phone": phone,
+                "cart": cart,
+                "total_amount": total_amount,
+                "payment_method": "online",
+                "payment_status": "pending",
+            }
+            request.session.save()
+            return redirect('stripe_payment')
 
-class OrderView(APIView):
+        else:
+            return render(request, self.template_name, {'error': 'Invalid payment method selected.'})
+
+class OrderViewSet(ViewSet):
+    permission_classes = [AllowAny]
+    template_name = 'orders.html'
+
     def get(self, request):
         customer_id = request.session.get('customer')
         orders = Order.objects.filter(customer_id=customer_id).order_by('-created_at')
@@ -316,4 +343,134 @@ class BuyNowViewSet(ViewSet):
 
 def about(request):
     about_us = AboutUs.objects.first() 
+    return render(request, 'about.html', {'about_us': about_us})
+
+class ContactViewSet(ViewSet):
+    permission_classes = [AllowAny]
+    template_name = 'contact.html'
+
+    def get(self, request):
+        Logger.info({"message": "Accessing Contact Page"})
+        return render(request, self.template_name)
+
+    def post(self, request):
+        serializer = ContactMessageSerializer(data=request.POST)
+        if serializer.is_valid():
+            serializer.save()
+            Logger.info({"message": "Contact form submitted", "data": serializer.validated_data})
+            messages.success(request, 'Your message has been sent successfully!')
+            return redirect('/contact/')  
+        else:
+            Logger.warning({"message": "Contact form submission failed", "errors": serializer.errors})
+            return render(request, self.template_name, {'errors': serializer.errors})
+
+class StripePaymentViewSet(ViewSet):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        checkout_data = request.session.get('checkout')
+        if not checkout_data:
+            Logger.warning({"message": "Stripe payment attempted without checkout session data"})
+            return redirect('checkout')
+
+        customer_id = checkout_data.get('customer_id')
+        cart = checkout_data.get('cart')
+        total_amount = checkout_data.get('total_amount')
+        address = checkout_data.get('address')
+        phone = checkout_data.get('phone')
+
+        line_items = []
+        for product_id, quantity in cart.items():
+            product = Products.objects.get(id=product_id)
+            line_items.append({
+                "price_data": {
+                    "currency": "usd",
+                    "product_data": {
+                        "name": product.name,
+                    },
+                    "unit_amount": int(product.price * 100),
+                },
+                "quantity": quantity,
+            })
+
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                payment_method_types=["card"],
+                line_items=line_items,
+                mode="payment",
+                success_url=request.build_absolute_uri('/payment-success?session_id={CHECKOUT_SESSION_ID}'),
+                cancel_url=request.build_absolute_uri('/payment-cancel'),
+                client_reference_id=str(customer_id),
+                metadata={
+                    "address": address,
+                    "phone": phone,
+                }
+            )
+            return redirect(checkout_session.url)
+        except Exception as e:
+            return redirect('checkout')
+
+def stripe_webhook(request):
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+    except (ValueError, stripe.error.SignatureVerificationError):
+        return HttpResponse(status=400)
+
+    if event['type'] == 'checkout.session.completed':
+        Order.objects.create(
+        
+        data={
+            
+            "payment_method": "Online",
+            "payment_status": "Paid",
+            
+        }
+    )
+        session = event['data']['object']
+
+        customer_id = session.get('client_reference_id')
+        metadata = session.get('metadata', {})
+        address = metadata.get('address', '')
+        phone = metadata.get('phone', '')
+
+        customer = Customer.objects.filter(id=customer_id).first()
+
+        line_items = stripe.checkout.Session.list_line_items(session['id'])
+
+        for item in line_items:
+            product_name = item.price.product.name if item.price and item.price.product else None
+            product = Products.objects.filter(name=product_name).first()
+            if not product:
+                continue
+
+            quantity = item.quantity
+
+            Order.objects.create(
+                customer=customer,
+                product=product,
+                data={
+                    "quantity": quantity,
+                    "price": product.price,
+                    "address": address,
+                    "phone": phone,
+                    "payment_method": "Online",
+                    "payment_status": "Paid",
+                    "status": "Confirmed",
+                    "date": timezone.now().date().isoformat(),
+                    "payment_reference": session.get('payment_intent')
+                }
+            )
+    return HttpResponse(status=200)
+
+def payment_success(request):
+    request.session['cart'] = {}
+    request.session['checkout'] = {}
+    return redirect('orders')
+
+def payment_cancel(request):
+    return render(request, 'payment_cancel.html')
     return render(request, 'about.html', {'about_us': about_us})

@@ -22,8 +22,9 @@ myenv/
 
 myenv/
 
-
 __pycache__/
+
+user/__pycache__/
 *.py[cod]
 
 

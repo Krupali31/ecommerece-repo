@@ -26,3 +26,7 @@ ENV PATH="/root/.local/bin:$PATH"
 
 # Run migrations and collect static files
 RUN python manage.py collectstatic --no-input
+
+EXPOSE 8000
+
+CMD ["gunicorn", "project.wsgi:application", "--bind", "0.0.0.0:8000"]

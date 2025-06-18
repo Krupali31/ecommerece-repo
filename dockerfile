@@ -20,8 +20,6 @@ RUN pipenv install --deploy --system
 
 # Copy entire project
 COPY . /opt/webapp
-COPY ./static /app/static
-COPY ./media /app/media
 
 # Set environment path
 ENV PATH="/root/.local/bin:$PATH"

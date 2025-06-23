@@ -39,16 +39,28 @@ body {
 /* Navbar Link hover for About and Contact */
 .navbar .navbar-nav .nav-link[href='/about/']:hover,
 .navbar .navbar-nav .nav-link[href='/contact/']:hover {
-    color: #0980ff !important; /* Darker blue on hover */
+    color: #0980ff !important; 
 }
 
-/* Button Styles */
 .btn-primary, .btn-success {
     font-size: 0.9rem;
     padding: 6px 12px;
 }
 
-/* Input and Select Styling */
 textarea, input, select {
     border-radius: 0.375rem !important;
+}
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; 
+}
+
+.container {
+  flex: 1;
 }

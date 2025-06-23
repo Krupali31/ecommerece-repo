@@ -1,30 +1,71 @@
 {% extends 'base.html' %}
-{%load static%}
+{% load static %}
 {% block content %}
-<h2>Checkout</h2>
 
-<form method="post" action="{% if product %}/buy_now/{{ product.id }}/{% else %}/checkout/{% endif %}">
-  {% csrf_token %}
-  <input type="text" name="first_name" placeholder="First Name" required><br>
-  <input type="text" name="last_name" placeholder="Last Name" required><br>
-  <input type="text" name="address1" placeholder="Address" required><br>
-  <input type="text" name="city" placeholder="City" required><br>
-  <input type="text" name="state" placeholder="state" required><br>
-  <input type="text" name="country" placeholder="Country" required><br>
-  <input type="text" name="zip" placeholder="Zip Code" required><br>
-  <input type="text" name="phone" placeholder="Phone Number" required><br>
+<div class="container py-5">
+  <h2 class="text-center mb-4">🧾 Checkout</h2>
 
-  <label>
-    <input type="radio" name="payment_method" value="COD" checked > 
-    Cash on Delivery (COD)
-  </label><br>
-  <label>
-    <input type="radio" name="payment_method" value="Online" > 
-    Pay Online
-  </label><br>
+  <form method="post" action="{% if product %}/buy_now/{{ product.id }}/{% else %}/checkout/{% endif %}" class="checkout-form mx-auto shadow p-4 bg-light rounded" style="max-width: 600px;">
+    {% csrf_token %}
 
-  <button id="submit-btn" type="submit">Place Order</button>
-</form>
+    <div class="mb-3">
+      <label for="first_name" class="form-label">First Name</label>
+      <input type="text" name="first_name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="last_name" class="form-label">Last Name</label>
+      <input type="text" name="last_name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="address1" class="form-label">Address</label>
+      <input type="text" name="address1" class="form-control" required>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="city" class="form-label">City</label>
+        <input type="text" name="city" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="state" class="form-label">State</label>
+        <input type="text" name="state" class="form-control" required>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="country" class="form-label">Country</label>
+        <input type="text" name="country" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="zip" class="form-label">Zip Code</label>
+        <input type="text" name="zip" class="form-control" required>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="phone" class="form-label">Phone Number</label>
+      <input type="text" name="phone" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Payment Method</label><br>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="payment_method" value="COD" checked>
+        <label class="form-check-label">Cash on Delivery</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="payment_method" value="Online">
+        <label class="form-check-label">Pay Online</label>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <button id="submit-btn" type="submit" class="btn btn-primary w-100">🛒 Place Order</button>
+    </div>
+  </form>
+</div>
 
 {% endblock %}
-

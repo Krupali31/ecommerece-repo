@@ -1,17 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const radios = document.querySelectorAll('input[name="payment_method"]');
-  const btn = document.getElementById('submit-btn');
+  const codRadio = document.querySelector('input[value="COD"]');
+  const onlineRadio = document.querySelector('input[value="Online"]');
+  const submitBtn = document.getElementById('submit-btn');
 
-  function updateButton() {
-    const selected = document.querySelector('input[name="payment_method"]:checked');
-    if (selected && btn) {
-      btn.innerText = selected.value === 'Online' ? 'Pay Now' : 'Place Order';
-    }
+  if (!codRadio || !onlineRadio || !submitBtn) {
+    console.warn("Required elements not found");
+    return;
   }
 
-  radios.forEach(radio => {
-    radio.addEventListener('change', updateButton);
-  });
+  function updateButtonText() {
+    submitBtn.innerText = onlineRadio.checked ? "💳 Pay Now" : "🛒 Place Order";
+  }
 
-  updateButton();  
+  codRadio.addEventListener('change', updateButtonText);
+  onlineRadio.addEventListener('change', updateButtonText);
+
+  updateButtonText(); // Set default on load
 });

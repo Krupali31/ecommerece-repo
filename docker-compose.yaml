@@ -38,8 +38,7 @@ services:
     depends_on:
       - postgres
       - redis
-    volumes:
-      - .:/opt/webapp
+    
     networks:
       - backend
 
@@ -76,3 +75,9 @@ volumes:
 
 networks:
   backend:
+
+command: >
+  sh -c "
+    python manage.py migrate &&
+    python manage.py collectstatic --noinput &&
+    gunicorn project.wsgi:application --bind 0.0.0.0:8000"

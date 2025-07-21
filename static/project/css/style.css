@@ -19,27 +19,34 @@ body {
     font-weight: 600;
 }
 
-/* Navbar Links */
-.navbar .navbar-nav .nav-link {
-    color: #007bff !important; /* Set color to blue */
-    margin-left: 10px;
+.navbar-nav .nav-link {
+  color: #0d6efd;
+  font-weight: 600;
+  transition: color 0.2s;
 }
 
 /* Navbar Link hover */
 .navbar .navbar-nav .nav-link:hover {
-    color: #0980ff !important; /* Darker blue on hover */
+    color: #0a58ca;
 }
 
-/* About and Contact Links (similar to MyShop color) */
 .navbar .navbar-nav .nav-link[href='/about/'],
 .navbar .navbar-nav .nav-link[href='/contact/'] {
-    color: #007bff !important; /* Match the "MyShop" color */
+    color: #0d6efd; 
+    font-weight: 600;
+    transition: color 0.2s;
 }
 
 /* Navbar Link hover for About and Contact */
 .navbar .navbar-nav .nav-link[href='/about/']:hover,
 .navbar .navbar-nav .nav-link[href='/contact/']:hover {
-    color: #0980ff !important; 
+    color: #0a58ca; 
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #212529;
 }
 
 .btn-primary, .btn-success {

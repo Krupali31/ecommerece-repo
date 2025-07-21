@@ -71,3 +71,7 @@ body {
 .container {
   flex: 1;
 }
+
+.product-card {
+    margin-bottom: 2.5rem; 
+}

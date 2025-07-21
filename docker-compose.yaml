@@ -39,6 +39,9 @@ services:
     depends_on:
       - postgres
       - redis
+    volumes:
+      - .:/opt/webapp
+      - ./media:/opt/webapp/media
     networks:
       - backend
 

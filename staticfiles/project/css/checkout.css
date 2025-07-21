@@ -1,0 +1,14 @@
+.checkout-form input[type="text"] {
+  height: 45px;
+  font-size: 15px;
+}
+
+.checkout-form .form-check-label {
+  font-weight: 500;
+}
+
+.checkout-form button {
+  font-size: 16px;
+  padding: 12px;
+  margin-top: 10px;
+}
